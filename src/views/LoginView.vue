@@ -2,7 +2,7 @@
     <ion-page>
         <ion-header>
             <ion-toolbar>
-                <ion-title>Login</ion-title>
+                <ion-title>Iniciar sesion</ion-title>
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
