@@ -1,20 +1,30 @@
 <template>
     <ion-page>
-        <ToolBar title="Inicio"></ToolBar>
+        <ion-header>
+            <ToolBar title="Listado de envios"></ToolBar>
+        </ion-header>
+
         <ion-content class="ion-padding">
+            <ion-segment v-model="filtro" class="ion-margin-bottom">
+                <ion-segment-button value="todas">Todas</ion-segment-button>
+                <ion-segment-button value="PENDIENTE">Pendientes</ion-segment-button>
+                <ion-segment-button value="ENTREGADO">Entregadas</ion-segment-button>
+            </ion-segment>
+
             <ion-grid>
                 <ion-row>
                     <ion-col>
                         <ion-card>
                             <ion-card-header>
-                                <ion-card-title>Inicio</ion-card-title>
-                                <ion-card-subtitle>Listado de envios pendeintes</ion-card-subtitle>
+                                <ion-card-title>Envios</ion-card-title>
+                                <ion-card-subtitle>
+                                    Listado de envios - {{ filtro.toUpperCase() }}
+                                </ion-card-subtitle>
                             </ion-card-header>
                             <ion-card-content>
                                 <ion-list>
-                                    <EnviosItem v-for="envio in envios" :key="envio.id"
-                                        :envio="envio" @entregar="cambiarEstado(envio)" />
-
+                                    <EnviosItem v-for="envio in enviosFilter" :key="envio.id" :envio="envio"
+                                        @entregar="cambiarEstado(envio)" />
                                 </ion-list>
                             </ion-card-content>
                         </ion-card>
@@ -26,26 +36,39 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import EnviosItem from "@/components/EnviosItemView.vue";
 import axios from 'axios'
-
 import {
     IonPage, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardContent,
-    IonCardHeader, IonCardTitle, IonCardSubtitle
+    IonCardHeader, IonCardTitle, IonCardSubtitle, IonSegment, IonSegmentButton
 } from '@ionic/vue'
 import ToolBar from '@/components/ToolBar.vue'
 
 export default {
-    components: { EnviosItem, IonPage, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardContent,
-        IonCardHeader, IonCardTitle, IonCardSubtitle,ToolBar },
+    components: {
+        EnviosItem, IonPage, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardContent,
+        IonCardHeader, IonCardTitle, IonCardSubtitle, ToolBar,IonSegment, IonSegmentButton
+    },
     data() {
         return {
+            filtro: "All",
             envios: [],
             // Variable para definir el header de autorización 
             config: {},
         }
     },
+    computed: {
+        enviosFilter() {
+            if (this.filtro == "PENDIENTE") {
+                return this.envios.filter(envio => envio.estado_envio == "PENDIENTE")
+            } else if (this.filtro == "ENTREGADO") {
+                return this.envios.filter(envio => envio.estado_envio == "ENTREGADO")
+            }
+            return this.envios;
+        }
+    }
+    ,
     methods: {
         // Petición para consultar datos 
         loadData() {
@@ -55,14 +78,14 @@ export default {
                 .then(response => {
                     let res = response.data
                     if (res.code == 200) {
-                        this.envios = res.data.filter(envio=>envio.estado_envio=="PENDIENTE")
+                        this.envios = res.data
                     }
                 })
                 .catch(error => console.log('Ha ocurrido un error'))
-        }, 
-        cambiarEstado(envio){
-            envio.estado_envio="ENTREGADO";
-            axios.put('http://127.0.0.1:8000/api/envio/update/'+envio.id, envio,this.config)
+        },
+        cambiarEstado(envio) {
+            envio.estado_envio = "ENTREGADO";
+            axios.put('http://127.0.0.1:8000/api/envio/update/' + envio.id, envio, this.config)
                 .then(response => {
                     this.loadData();
                 })
@@ -82,5 +105,5 @@ export default {
         await this.getToken();
         this.loadData();
     }
-} 
+};
 </script>

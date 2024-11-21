@@ -64,7 +64,7 @@ export default {
     methods: {
         login() {
             // Petición para realizar login 
-            axios.post('http://127.0.0.1:8000/api/login', this.usuario)
+            axios.post('http://127.0.0.1:8000/api/usuario/login', this.usuario)
                 .then(response => {
                     // console.log(response) 
                     if (response.data.code == 200) {
@@ -74,7 +74,7 @@ export default {
                         // Se guarda el usuario en el Ionic Storage 
                         this.$storage.set('user', response.data.data.name)
                         // Se redirecciona a la primera pantalla de la aplicación 
-                        this.$router.push('/tabs/addCliente')
+                        this.$router.push('/tabs/inicio')
                     }
                 })
                 .catch(error => {

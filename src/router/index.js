@@ -1,14 +1,11 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import TabsPage from '../views/TabsPage.vue'
-import AddCliente from '../components/AddCliente.vue'
-import Cliente from '../components/Cliente.vue'
-import AddCategoria from '../components/AddCategoria.vue'
-import Categoria from '../components/Categoria.vue'
 // Se importa el login 
 import Login from '../views/LoginView.vue'
 // Se importa el Storage 
 import { Storage } from '@ionic/storage';
 import InicioView from '../views/InicioView.vue';
+import EnviosAllView from '../views/EnviosAllView.vue';
 
 
 // Función que verifica la existencia del usuario en el storage,  
@@ -52,10 +49,9 @@ const routes = [
             next('/') // Redirección al login 
           }
         }
-      },
-      {
-        path: 'addCliente',
-        component: AddCliente,
+      },{
+        path: 'enviosAll',
+        component: EnviosAllView,
         // Se verifica la sesión antes de activar la ruta 
         beforeEnter: async (to, from, next) => {
           let res = await sesionActiva()
@@ -66,45 +62,6 @@ const routes = [
           }
         }
       },
-      {
-        path: 'Clientes',
-        component: Cliente,
-        // Se verifica la sesión antes de activar la ruta 
-        beforeEnter: async (to, from, next) => {
-          let res = await sesionActiva()
-          if (res) {
-            next() // Se muestra el componente 
-          } else {
-            next('/') // Redirección al login 
-          }
-        }
-      },
-      {
-        path: 'addCategoria',
-        component: AddCategoria,
-        // Se verifica la sesión antes de activar la ruta 
-        beforeEnter: async (to, from, next) => {
-          let res = await sesionActiva()
-          if (res) {
-            next() // Se muestra el componente 
-          } else {
-            next('/') // Redirección al login 
-          }
-        }
-      },
-      {
-        path: 'Categorias',
-        component: Categoria,
-        // Se verifica la sesión antes de activar la ruta 
-        beforeEnter: async (to, from, next) => {
-          let res = await sesionActiva()
-          if (res) {
-            next() // Se muestra el componente 
-          } else {
-            next('/') // Redirección al login 
-          }
-        }
-      }
     ]
   }
 ]
